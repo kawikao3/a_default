@@ -1,0 +1,59 @@
+{
+  "variables": {
+    "gce_credentials":          "{{env `GCE_CREDENTIALS`}}",
+    "gce_project_id":           "{{env `GCE_PROJECT_ID`}}",
+    "gce_zone":                 "{{env `GCE_DEFAULT_ZONE`}}",
+    "gce_source_image_family":  "{{env `GCE_SOURCE_IMAGE_FAMILY`}}",
+    "gce_image_family":         "{{env `GCE_IMAGE_FAMILY`}}",
+    "image_prefix":             "gcp-ubuntu-nginx-resty-base",
+    "openresty_version":        "1.11.2.3",
+    "openresty_key":            "A0E98066",
+    "scripts_dir":              "scripts",
+    "config_dir":               "config",
+    "ssh_username":             "kawika",
+    "dns_listen_addr":          "127.0.0.1"
+  },
+  "builders": [
+    {
+      "type":                   "googlecompute",
+      "project_id":             "{{user `gce_project_id`}}",
+      "account_file":           "{{user `gce_credentials`}}",
+      "zone":                   "{{user `gce_zone`}}",
+      "network":                "default",
+      "source_image_family":    "{{user `gce_source_image_family`}}",
+      "ssh_username":           "{{user `ssh_username`}}",
+      "image_name":             "packer-{{user `image_prefix`}}-{{timestamp}}",
+      "image_description":      "packer-{{user `image_prefix`}}-image",
+      "image_family":           "{{user `gce_image_family`}}",
+      "use_internal_ip":        false,
+      "tags": [
+        "{{user `image_prefix`}}"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo {{user `ssh_username`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "inline": [
+        "wget -qO - https://openresty.org/package/pubkey.gpg | sudo apt-key add -",
+        "sudo apt-get -y install software-properties-common",
+        "sudo add-apt-repository -y \"deb http://openresty.org/package/ubuntu $(lsb_release -sc) main\"",
+        "sudo apt-get update",
+        "sudo apt-get install -y openresty"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "nginx.conf",
+      "destination": "/tmp/nginx.conf"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo {{user `ssh_username`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+      "inline": [
+          "cp /tmp/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf"
+      ]
+    }
+  ]
+}
