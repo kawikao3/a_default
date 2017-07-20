@@ -1,0 +1,104 @@
+// A Declarative Pipeline is defined within a 'pipeline' block.
+pipeline {
+
+  // agent defines where the pipeline will run.
+  agent {
+    label ""
+  }
+  
+  // The tools directive allows you to automatically install tools configured in
+  // Jenkins - note that it doesn't work inside Docker containers currently.
+  tools {
+    // Here we have pairs of tool symbols (not all tools have symbols, so if you
+    // try to use one from a plugin you've got installed and get an error and the 
+    // tool isn't listed in the possible values, open a JIRA against that tool!)
+    // and installations configured in your Jenkins master's tools configuration.
+   jdk "jdk8"
+  }
+  
+  environment {
+    FOO = "BAR"
+  }
+  
+  stages {
+    stage("first stage") {
+      steps {
+        timeout(time: true, uint: 'MINUTES') {
+          echo "We're not doing anything particularly special here."
+          echo "Just making sure that we don't take longer than five minutes"
+          echo "Which, I guess, is kind of silly."
+        }
+      }
+      
+      // Post can be used both on individual stages and for the entire build.
+      post {
+        success {
+          echo "Only when we haven't failed running the first stage"
+        }
+        
+        failure {
+          echo "Only when we fail running the first stage."
+        }
+      }
+    }
+    
+    stage('second stage') {
+      tools {
+        echo "overriding environment and agent tools settings"
+      }
+      
+      steps {
+        echo "second stage step"
+      }
+    }
+    
+    stage('third stage') {
+      steps {
+        parallel(one: {
+                  echo "I'm on the first branch!"
+                 },
+                 two: {
+                   echo "I'm on the second branch!"
+                 },
+                 three: {
+                   echo "I'm on the third branch!"
+                   echo "But you probably guessed that already."
+                 })
+      }
+    }
+  }
+  
+  post {
+    // Always runs. And it runs before any of the other post conditions.
+    always {
+      // Let's wipe out the workspace before we finish!
+      deleteDir()
+    }
+    
+    success {
+      mail(from: "kawika333@gmail.com", 
+           to: "kawikao@kickin6.com", 
+           subject: "That build passed.",
+           body: "Nothing to see here")
+    }
+
+    failure {
+      mail(from: "kawika333@gmail.com", 
+           to: "kawikao@kickin6.com", 
+           subject: "That build failed!", 
+           body: "Nothing to see here")
+    }
+  }
+  
+  // The options directive is for configuration that applies to the whole job.
+  options {
+    // For example, we'd like to make sure we only keep 10 builds at a time, so
+    // we don't fill up our storage!
+    buildDiscarder(logRotator(numToKeepStr:'3'))
+    
+    // And we'd really like to be sure that this build doesn't hang forever, so
+    // let's time it out after an hour.
+    timeout(time: 60, unit: 'MINUTES')
+  }
+
+}
