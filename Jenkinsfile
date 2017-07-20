@@ -8,9 +8,9 @@ pipeline {
     label ""
   }
   
-  tools {
+//  tools {
     // pipeline level tools
-  }
+//  }
   
   environment {
     FOO = "BAR"
@@ -35,9 +35,9 @@ pipeline {
     }
     
     stage('second stage') {
-      tools {
+//      tools {
         // overriding environment and agent tools settings
-      }
+//      }
       
       steps {
         echo "second stage step"
