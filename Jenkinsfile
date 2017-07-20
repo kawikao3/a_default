@@ -68,17 +68,7 @@ pipeline {
     }
     
     success {
-      mail(from: "kawika333@gmail.com", 
-           to: "kawikao@kickin6.com", 
-           subject: "That build passed.",
-           body: "Nothing to see here")
-    }
-
-    failure {
-      mail(from: "kawika333@gmail.com", 
-           to: "kawikao@kickin6.com", 
-           subject: "That build failed!", 
-           body: "Nothing to see here")
+      echo "DONE!"
     }
   }
   
