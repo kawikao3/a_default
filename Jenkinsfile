@@ -1,3 +1,5 @@
+#!groovy
+
 // A Declarative Pipeline is defined within a 'pipeline' block.
 pipeline {
 
@@ -7,7 +9,7 @@ pipeline {
   }
   
   tools {
-    echo "pipeline level tools"
+    // pipeline level tools
   }
   
   environment {
@@ -34,7 +36,7 @@ pipeline {
     
     stage('second stage') {
       tools {
-        echo "overriding environment and agent tools settings"
+        // overriding environment and agent tools settings
       }
       
       steps {
