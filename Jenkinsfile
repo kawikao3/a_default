@@ -6,14 +6,8 @@ pipeline {
     label ""
   }
   
-  // The tools directive allows you to automatically install tools configured in
-  // Jenkins - note that it doesn't work inside Docker containers currently.
   tools {
-    // Here we have pairs of tool symbols (not all tools have symbols, so if you
-    // try to use one from a plugin you've got installed and get an error and the 
-    // tool isn't listed in the possible values, open a JIRA against that tool!)
-    // and installations configured in your Jenkins master's tools configuration.
-   jdk "jdk8"
+    echo "pipeline level tools"
   }
   
   environment {
@@ -23,11 +17,7 @@ pipeline {
   stages {
     stage("first stage") {
       steps {
-        timeout(time: true, uint: 'MINUTES') {
-          echo "We're not doing anything particularly special here."
-          echo "Just making sure that we don't take longer than five minutes"
-          echo "Which, I guess, is kind of silly."
-        }
+        echo "Foo is ${env.FOO}"
       }
       
       // Post can be used both on individual stages and for the entire build.
