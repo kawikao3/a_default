@@ -8,7 +8,7 @@ node() {
     }
 
     stage('Dependencies') {
-        env.GCE_CREDENTIALS="/var/jenkins/.gcloud/credentials.json"
+        env.GCE_CREDENTIALS="/var/lib/jenkins/.gcloud/credentials.json"
         env.GCE_PROJECT_ID="green-entity-167900"
         env.GCE_DEFAULT_ZONE="us-west1-a"
         env.GCE_SOURCE_IMAGE_FAMILY="ubuntu-1704"
