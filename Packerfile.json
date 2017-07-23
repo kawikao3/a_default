@@ -5,7 +5,7 @@
     "gce_zone":                 "{{env `GCE_DEFAULT_ZONE`}}",
     "gce_source_image_family":  "{{env `GCE_SOURCE_IMAGE_FAMILY`}}",
     "gce_image_family":         "{{env `GCE_IMAGE_FAMILY`}}",
-    "image_prefix":             "gcp-ubuntu-nginx-resty-base",
+    "image_prefix":             "a-com-default-base",
     "openresty_version":        "1.11.2.3",
     "openresty_key":            "A0E98066",
     "scripts_dir":              "scripts",
